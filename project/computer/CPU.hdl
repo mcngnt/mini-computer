@@ -36,8 +36,20 @@ CHIP CPU {
 
     PARTS:
     
+    Memory(in=inM, load = instruction[15], address=instruction[0..14], out=fetch);
 
-    
+    And(a=instruction[15], instruction[14], last2Bits);
+    And(a=last2Bits, b=instruction[13], cInstr);
+
+    Register(in=inM, load=instruction[12], out=rA);
+
+    Mux16(a=inM, b=rA, sel=instruction[12], out=xVal)
+    ALU(zx=instruction[11], nx = instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], instruction[6]=no, );
+
+
+    Register()
+
+
     
 
 }
