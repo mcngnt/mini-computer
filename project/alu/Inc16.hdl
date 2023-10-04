@@ -1,0 +1,16 @@
+
+/**
+ * 16-bit incrementer:
+ * out = in + 1 (arithmetic addition)
+ */
+
+CHIP Inc16 {
+    IN in[16];
+    OUT out[16];
+
+    PARTS:
+    Not(in=in[0], out = inNot);
+    And(a=in[0], b=inNot, out=bottom);
+    Or(a=in[0], b=inNot, out=top);
+    Add16(a=in, b[0]=top,b[1]=bottom,b[2]=bottom,b[3]=bottom,b[4]=bottom,b[5]=bottom,b[6]=bottom,b[7]=bottom,b[8]=bottom,b[9]=bottom,b[10]=bottom,b[11]=bottom,b[12]=bottom,b[13]=bottom,b[14]=bottom,b[15]=bottom, out=out);
+}
