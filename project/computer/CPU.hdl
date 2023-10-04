@@ -35,19 +35,64 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
+
+
+    % Register A
+    % Register D
+    % PC
+    % ALU
+
+
+    % And(a=instruction[15], instruction[14], last2Bits);
+    % And(a=last2Bits, b=instruction[13], cInstr);
+
+
+    % Mux16(a=inM, b=rA, sel=instruction[12], out=xVal)
+    % ALU(zx=instruction[11], nx = instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], instruction[6]=no, );
+
+
+    % Register()
+
     
-    Memory(in=inM, load = instruction[15], address=instruction[0..14], out=fetch);
-
-    And(a=instruction[15], instruction[14], last2Bits);
-    And(a=last2Bits, b=instruction[13], cInstr);
-
-    Register(in=inM, load=instruction[12], out=rA);
-
-    Mux16(a=inM, b=rA, sel=instruction[12], out=xVal)
-    ALU(zx=instruction[11], nx = instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], instruction[6]=no, );
+    % Not(in=instruction[15], out=notA, addressM=instructions[0..14]);
 
 
-    Register()
+
+    Mux16(a=rA, b=inM, sel=instruction[12], out=yValue);
+
+    ALU(zx=instruction[11], nx = instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6],x=rD, y=yValue, zr=zrAlu, ng=ngAlu, out=outAlu );
+
+    Not(in=ngAlu, out=pgAlu);
+
+    And(a=instruction[15], b=instruction[5], out=instru5A);
+    And(a=instruction[15], b=instruction[4], out=instru4A);
+    And(a=instruction[15], b=instruction[3], out=instru3A);
+
+    Register(in=outAlu, load=instru5A, out=rA);
+    Register(in=outAlu, load=instru4A, out=rD);
+
+    Mux16(a=inM, b=outAlu, sel=instru3A, out=outM, writeM=instru3A);
+
+    And(a=instruction[2], b=ngAlu, out=j1Cond);
+    And(a=instruction[1], b=zrAlu, out=j2Cond);
+    And(a=instruction[0], b=pgAlu, out=j3Cond);
+
+    Or(a=j1Cond, b=j2Cond, out=tempJCond);
+    Or(a=tempJCond, b=j3Cond, out=jCond);
+    And(a=instruction[15], b=jCond, out=trueJCond);
+    Not(in=trueJCond, out=notTrueJCond);
+
+
+    Mux16(a=instruction, b=rA, sel=instruction[15], out=surplusAddress);
+
+    And(a=notTrueJCond, b=address[15], out=incrCond);
+
+
+    PC(in=rA, load=trueJCond, inc=incrCond, reset=reset, out=pc, addressM=surplusAddress[0..14]);
+
+
+
+
 
 
     
