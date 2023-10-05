@@ -38,10 +38,10 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-    Not(in=zx, out=zxNot);
-    Not(in=zy, out=zyNot);
-    And16(a=x, b[0]=zxNot,b[1]=zxNot,b[2]=zxNot,b[3]=zxNot,b[4]=zxNot,b[5]=zxNot,b[6]=zxNot,b[7]=zxNot,b[8]=zxNot,b[9]=zxNot,b[10]=zxNot,b[11]=zxNot,b[12]=zxNot,b[13]=zxNot,b[14]=zxNot,b[15]=zxNot, out=xZero);
-    And16(a=y, b[0]=zyNot,b[1]=zyNot,b[2]=zyNot,b[3]=zyNot,b[4]=zyNot,b[5]=zyNot,b[6]=zyNot,b[7]=zyNot,b[8]=zyNot,b[9]=zyNot,b[10]=zyNot,b[11]=zyNot,b[12]=zyNot,b[13]=zyNot,b[14]=zyNot,b[15]=zyNot, out=yZero);
+
+    
+    Mux16(a=x, b=false, sel=zx, out=xZero);
+    Mux16(a=y, b=false, sel=zy, out=yZero);
 
     Not16(in=xZero, out= notXZero);
     Not16(in=yZero, out= notYZero);
